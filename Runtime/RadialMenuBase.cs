@@ -28,12 +28,14 @@ namespace RadialMenu
         private Vector2 _elementCenterScreenPos;
         private Vector2 _pointerPosition;
         private int _activeSegment = -1;
+        private VisualElement[] _itemElements;
 
         internal WheelElement(RadialMenuSettings settings)
         {
             _settings = settings;
             _center = new Vector2(settings.OuterRadius, settings.OuterRadius);
 
+            GenerateItemElements();
             generateVisualContent += GenerateVisualContent;
 
             style.width = settings.OuterRadius * 2f;
@@ -47,6 +49,8 @@ namespace RadialMenu
             RegisterCallback<PointerMoveEvent>(OnPointerMove);
             RegisterCallback<PointerLeaveEvent>(OnPointerLeft);
             RegisterCallback<ClickEvent>(OnClick);
+
+            experimental.animation.Scale(1, 2000).from = 0;
         }
 
         private Vector2 PolarToCartesian(float radius, float angle)
@@ -55,24 +59,45 @@ namespace RadialMenu
             return new Vector2(Mathf.Cos(rad) * radius, Mathf.Sin(rad) * radius) + _center;
         }
 
+        private void GenerateItemElements()
+        {
+            _itemElements = new VisualElement[_settings.Items.Length];
+            float size = _settings.OuterRadius - _settings.InnerRadius; 
+            for (int i = 0; i < _settings.Items.Length; i++)
+            {
+                var itemElement = _settings.Items[i].CreateItemElement();
+                _itemElements[i] = itemElement;
+                itemElement.style.position = Position.Absolute;
+    
+                itemElement.style.width = size;
+                itemElement.style.height = size;
+                itemElement.style.backgroundColor = Color.red;
+
+                Add(itemElement);
+            }
+        }
+
         private void GenerateVisualContent(MeshGenerationContext ctx)
         {
-            const int SegmentCount = 8;
             var painter = ctx.painter2D;
-            float angleStep = 360f / SegmentCount;
+            float angleStep = 360f / _settings.Items.Length;
 
             Vector2 direction = _pointerPosition - _elementCenterScreenPos;
             float pointerDistanceFromCenter = Vector2.Distance(_pointerPosition, _elementCenterScreenPos);
             direction = direction.normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             if (angle < 0) angle += 360;
-            Debug.Log(angle);
 
             _activeSegment = -1;
-            for (int i = 0; i < SegmentCount; i++)
+            for (int i = 0; i < _settings.Items.Length; i++)
             {
                 float startAngle = Mathf.Max(i * angleStep + _settings.SegmentSpacing, 1);
                 float endAngle = Mathf.Max(startAngle + angleStep - _settings.SegmentSpacing, 2);
+                float midAngle = (startAngle + endAngle) / 2;
+                
+                float radius = (_settings.OuterRadius + _settings.InnerRadius) / 2;
+                Vector2 position = PolarToCartesian(radius, midAngle);
+                
                 bool isHoveredSegment = pointerDistanceFromCenter < _settings.OuterRadius && pointerDistanceFromCenter > _settings.InnerRadius;
                 isHoveredSegment = isHoveredSegment && (angle < endAngle && angle > startAngle);
 
@@ -90,6 +115,9 @@ namespace RadialMenu
                 painter.ClosePath();
                 painter.Fill();
                 painter.Stroke();
+                
+                _itemElements[i].style.left = position.x - (_itemElements[i].resolvedStyle.width / 2);
+                _itemElements[i].style.top = position.y - (_itemElements[i].resolvedStyle.height / 2);
             }
 
             // // Draw outer circle outline
@@ -109,7 +137,10 @@ namespace RadialMenu
 
         private void OnClick(ClickEvent evt)
         {
-            Debug.Log(_activeSegment);
+            if (_activeSegment < 0 || _activeSegment >= _settings.Items.Length)
+                return;
+            
+            _settings.Items[_activeSegment].OnItemPerform();
         }
 
         private void OnPointerMove(PointerMoveEvent evt)
@@ -126,6 +157,7 @@ namespace RadialMenu
     }
 
     internal record RadialMenuSettings(
+        IRadialMenuItem[] Items,
         int InnerRadius,
         int OuterRadius,
         int SegmentSpacing,
@@ -136,6 +168,7 @@ namespace RadialMenu
         Color CenterElementColor,
         Color CenterElementStrokeColor)
     {
+        public IRadialMenuItem[] Items { get; } = Items;
         public int InnerRadius { get; } = InnerRadius;
         public int OuterRadius { get; } = OuterRadius;
         public int SegmentSpacing { get; } = SegmentSpacing;

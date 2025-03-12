@@ -5,9 +5,9 @@ namespace RadialMenu
 {
     public static class RadialMenuBuilder
     {
-        public static RadialMenuRaw New()
+        public static RadialMenuRaw New(params IRadialMenuItem[] items)
         {
-            return new RadialMenuRaw()
+            return new RadialMenuRaw(items)
             {
                 DefaultPanelSettings = Resources.Load<PanelSettings>("DefaultRadialMenuPanelSettings"),
                 BaseStyleSheet = Resources.Load<StyleSheet>("RadialMenuBaseStyle"),
@@ -15,7 +15,7 @@ namespace RadialMenu
         }
     }
 
-    public class RadialMenuRaw
+    public record RadialMenuRaw
     {
         internal PanelSettings DefaultPanelSettings;
         internal StyleSheet BaseStyleSheet;
@@ -28,11 +28,17 @@ namespace RadialMenu
         internal Color MainStrokeColor;
         internal Color CenterElementColor;
         internal Color CenterElementStrokeColor;
+        internal IRadialMenuItem[] Items;
+
+        public RadialMenuRaw(IRadialMenuItem[] items)
+        {
+            Items = items;
+        }
         
         public IRadialMenu Build()
         {
             return new SimpleRadialMenu(DefaultPanelSettings, BaseStyleSheet, 
-                new RadialMenuSettings(InnerRadius, OuterRadius, SegmentSpacing, CenterElementRadius, Position, 
+                new RadialMenuSettings(Items, InnerRadius, OuterRadius, SegmentSpacing, CenterElementRadius, Position, 
                     MainColor, MainStrokeColor, CenterElementColor, CenterElementStrokeColor));
         }
 
