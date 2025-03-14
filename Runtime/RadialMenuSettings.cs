@@ -2,8 +2,9 @@ using UnityEngine;
 
 namespace RadialMenu
 {
-    internal record RadialMenuSettings(
+    public record RadialMenuSettings(
         IRadialMenuItem[] Items,
+        int VisibilityAnimationTime,
         int InnerRadius,
         int OuterRadius,
         int SegmentSpacing,
@@ -15,6 +16,7 @@ namespace RadialMenu
         Color CenterElementStrokeColor)
     {
         public IRadialMenuItem[] Items { get; } = Items;
+        public int VisibilityAnimationTime { get; } = VisibilityAnimationTime;
         public int InnerRadius { get; } = InnerRadius;
         public int OuterRadius { get; } = OuterRadius;
         public int SegmentSpacing { get; } = SegmentSpacing;

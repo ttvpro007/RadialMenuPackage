@@ -1,23 +1,32 @@
+using System;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace RadialMenu.Elements
 {
     public class RadialMenuRoot : VisualElement
     {
+        public event Action<Vector2> PointerMoved;
+        public event Action<Vector2> PointerClick; 
+        
         private RadialMenuElement _element;
         
-        internal RadialMenuRoot(RadialMenuSettings settings)
+        internal RadialMenuRoot()
         {
             name = "radial-menu-parent";
             
-            Add(_element = new RadialMenuElement(settings));
-            
             RegisterCallback<PointerMoveEvent>(OnPointerMove);
+            RegisterCallback<ClickEvent>(OnClick);
         }
 
         private void OnPointerMove(PointerMoveEvent evt)
         {
-            _element.PointerPosition = evt.position;
+            PointerMoved?.Invoke(evt.position);
+        }
+
+        private void OnClick(ClickEvent evt)
+        {
+            PointerClick?.Invoke(evt.position);
         }
     }
 }

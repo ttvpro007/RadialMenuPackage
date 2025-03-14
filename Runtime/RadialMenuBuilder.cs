@@ -3,23 +3,12 @@ using UnityEngine.UIElements;
 
 namespace RadialMenu
 {
-    public static class RadialMenuBuilder
-    {
-        public static RadialMenuRaw New(params IRadialMenuItem[] items)
-        {
-            return new RadialMenuRaw(items)
-            {
-                DefaultPanelSettings = Resources.Load<PanelSettings>("DefaultRadialMenuPanelSettings"),
-                BaseStyleSheet = Resources.Load<StyleSheet>("RadialMenuBaseStyle"),
-            };
-        }
-    }
-
-    public record RadialMenuRaw
+    public class RadialMenuBuilder
     {
         internal PanelSettings DefaultPanelSettings;
         internal StyleSheet BaseStyleSheet;
         internal Vector2 Position;
+        internal float VisibilityAnimationTime;
         internal int OuterRadius;
         internal int InnerRadius;
         internal int SegmentSpacing;
@@ -30,54 +19,72 @@ namespace RadialMenu
         internal Color CenterElementStrokeColor;
         internal IRadialMenuItem[] Items;
 
-        public RadialMenuRaw(IRadialMenuItem[] items)
+        private RadialMenuBuilder(IRadialMenuItem[] items)
         {
             Items = items;
         }
         
-        public IRadialMenu Build()
+        public T Build<T>() where T : IRadialMenu, new()
         {
-            return new SimpleRadialMenu(DefaultPanelSettings, BaseStyleSheet, 
-                new RadialMenuSettings(Items, InnerRadius, OuterRadius, SegmentSpacing, CenterElementRadius, Position, 
+            T result = new T();
+            result.Initialize(DefaultPanelSettings, BaseStyleSheet, 
+                new RadialMenuSettings(Items, Mathf.RoundToInt(VisibilityAnimationTime * 1000), 
+                    InnerRadius, OuterRadius, SegmentSpacing, CenterElementRadius, Position, 
                     MainColor, MainStrokeColor, CenterElementColor, CenterElementStrokeColor));
+            return result;
         }
 
-        public RadialMenuRaw WithOuterRadius(int radius)
+        public RadialMenuBuilder WithVisibilityAnimationTime(float time)
+        {
+            VisibilityAnimationTime = time;
+            return this;
+        }
+
+        public RadialMenuBuilder WithOuterRadius(int radius)
         {
             OuterRadius = radius;
             return this;
         }
 
-        public RadialMenuRaw WithInnerRadius(int radius)
+        public RadialMenuBuilder WithInnerRadius(int radius)
         {
             InnerRadius = radius;
             return this;
         }
 
-        public RadialMenuRaw WithSegmentSpacing(int spacing)
+        public RadialMenuBuilder WithSegmentSpacing(int spacing)
         {
             SegmentSpacing = spacing;
             return this;
         }
 
-        public RadialMenuRaw InPosition(Vector2 position)
+        public RadialMenuBuilder InPosition(Vector2 position)
         {
             Position = position;
             return this;
         }
 
-        public RadialMenuRaw WithMainColors(Color fillColor, Color strokeColor)
+        public RadialMenuBuilder WithMainColors(Color fillColor, Color strokeColor)
         {
             MainColor = fillColor;
             MainStrokeColor = strokeColor;
             return this;
         }
 
-        public RadialMenuRaw WithCenterElementColors(Color fillColor, Color strokeColor)
+        public RadialMenuBuilder WithCenterElementColors(Color fillColor, Color strokeColor)
         {
             CenterElementColor = fillColor;
             CenterElementStrokeColor = strokeColor;
             return this;
+        }
+        
+        public static RadialMenuBuilder Create(params IRadialMenuItem[] items)
+        {
+            return new RadialMenuBuilder(items)
+            {
+                DefaultPanelSettings = Resources.Load<PanelSettings>("DefaultRadialMenuPanelSettings"),
+                BaseStyleSheet = Resources.Load<StyleSheet>("RadialMenuBaseStyle"),
+            };
         }
     }
 }
