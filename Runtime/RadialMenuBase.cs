@@ -21,9 +21,10 @@ namespace RadialMenu
         void IRadialMenu.Initialize(PanelSettings panelSettings, StyleSheet baseStyleSheet, RadialMenuSettings settings)
         {
             Settings = settings;
-            ElementCenterScreenPos = new Vector2(settings.Position.x, Screen.height - settings.Position.y);
+            ElementCenterScreenPos = new Vector2(settings.ScreenPosition.x, Screen.height - settings.ScreenPosition.y);
             
-            GameObject documentObj = new GameObject("Radial menu");
+            GameObject documentObj = new GameObject($"{GetType().Name} document object");
+            GameObject.DontDestroyOnLoad(documentObj);
             Document = documentObj.AddComponent<UIDocument>();
             Document.panelSettings = panelSettings;
             Document.rootVisualElement.styleSheets.Add(baseStyleSheet);
@@ -61,11 +62,11 @@ namespace RadialMenu
             _activeItemIndex = -1;
             for (int i = 0; i < Settings.Items.Length; i++)
             {
-                float startAngle = Mathf.Max(i * angleStep + Settings.SegmentSpacing, 1);
-                float endAngle = Mathf.Max(startAngle + angleStep - Settings.SegmentSpacing, 2);
+                float startAngle = Mathf.Max(i * angleStep + Settings.MainSegmentSpacing, 1);
+                float endAngle = Mathf.Max(startAngle + angleStep - Settings.MainSegmentSpacing, 2);
                 
-                bool isHoveredSegment = pointerDistanceFromCenter < Settings.OuterRadius && pointerDistanceFromCenter > Settings.InnerRadius;
-                isHoveredSegment = isHoveredSegment && (angle < endAngle && angle > startAngle);
+                bool isHoveredSegment = angle < endAngle && angle > startAngle;
+                isHoveredSegment = isHoveredSegment && (pointerDistanceFromCenter < Settings.MainOuterRadius && pointerDistanceFromCenter > Settings.MainInnerRadius);
 
                 if (isHoveredSegment)
                     _activeItemIndex = i;
@@ -123,13 +124,5 @@ namespace RadialMenu
             ElementCenterScreenPos = new Vector2(position.x, Screen.height - position.y);
             Element.SetPosition(position);
         }
-    }
-
-    public enum RadialMenuState
-    {
-        Hidden,
-        ShowTransition,
-        Visible,
-        HideTransition,
     }
 }

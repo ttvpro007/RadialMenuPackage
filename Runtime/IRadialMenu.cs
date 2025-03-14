@@ -10,7 +10,5 @@ namespace RadialMenu
         public void Show();
         public void Hide();
         public void SetScreenPosition(Vector2 position);
-
-        public static void Test(){}
     }
 }

@@ -2,8 +2,9 @@ namespace RadialMenu
 {
     public enum RadialMenuAction
     {
-        Nothing,
+        None,
         Close,
         PerformItem,
+        CustomAction,
     }
 }

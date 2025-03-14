@@ -17,17 +17,17 @@ namespace RadialMenu.Elements
             name = "radial-menu-element";
             
             _settings = settings;
-            _center = new Vector2(settings.OuterRadius, settings.OuterRadius);
+            _center = new Vector2(settings.MainOuterRadius, settings.MainOuterRadius);
             ActiveItemIndex = -1;
 
             GenerateItemElements();
             generateVisualContent += GenerateVisualContent;
 
-            style.width = settings.OuterRadius * 2f;
-            style.height = settings.OuterRadius * 2f;
+            style.width = settings.MainOuterRadius * 2f;
+            style.height = settings.MainOuterRadius * 2f;
 
-            _pointerPosition = settings.Position;
-            SetPosition(settings.Position);
+            _pointerPosition = settings.ScreenPosition;
+            SetPosition(settings.ScreenPosition);
         }
 
         private Vector2 PolarToCartesian(float radius, float angle)
@@ -39,7 +39,7 @@ namespace RadialMenu.Elements
         private void GenerateItemElements()
         {
             ItemElements = new VisualElement[_settings.Items.Length];
-            float size = _settings.OuterRadius - _settings.InnerRadius; 
+            float size = _settings.MainOuterRadius - _settings.MainInnerRadius; 
             for (int i = 0; i < _settings.Items.Length; i++)
             {
                 var itemElement = _settings.Items[i].CreateItemElement();
@@ -60,23 +60,23 @@ namespace RadialMenu.Elements
 
             for (int i = 0; i < _settings.Items.Length; i++)
             {
-                float startAngle = Mathf.Max(i * angleStep + _settings.SegmentSpacing, 1);
-                float endAngle = Mathf.Max(startAngle + angleStep - _settings.SegmentSpacing, 2);
+                float startAngle = Mathf.Max(i * angleStep + _settings.MainSegmentSpacing, 1);
+                float endAngle = Mathf.Max(startAngle + angleStep - _settings.MainSegmentSpacing, 2);
                 float midAngle = (startAngle + endAngle) / 2;
                 
-                float radius = (_settings.OuterRadius + _settings.InnerRadius) / 2;
+                float radius = (_settings.MainOuterRadius + _settings.MainInnerRadius) / 2;
                 Vector2 position = PolarToCartesian(radius, midAngle);
 
                 bool isHoveredSegment = i == ActiveItemIndex;
                 
-                painter.fillColor = isHoveredSegment ? Color.black : _settings.MainColor;
+                painter.fillColor = isHoveredSegment ? _settings.MainHighlightedColor : _settings.MainColor;
                 painter.strokeColor = _settings.MainStrokeColor;
-                painter.lineWidth = 2;
+                painter.lineWidth = _settings.MainSegmentStrokeWidth;
 
                 painter.BeginPath();
-                painter.Arc(_center, _settings.OuterRadius, startAngle, endAngle);
-                painter.LineTo(PolarToCartesian(_settings.InnerRadius, endAngle));
-                painter.Arc(_center, _settings.InnerRadius, endAngle, startAngle, ArcDirection.CounterClockwise);
+                painter.Arc(_center, _settings.MainOuterRadius, startAngle, endAngle);
+                painter.LineTo(PolarToCartesian(_settings.MainInnerRadius, endAngle));
+                painter.Arc(_center, _settings.MainInnerRadius, endAngle, startAngle, ArcDirection.CounterClockwise);
                 painter.ClosePath();
                 painter.Fill();
                 painter.Stroke();
@@ -111,8 +111,8 @@ namespace RadialMenu.Elements
 
         public void SetPosition(Vector2 position)
         {
-            style.left = position.x - _settings.OuterRadius;
-            style.bottom = position.y - _settings.OuterRadius;
+            style.left = position.x - _settings.MainOuterRadius;
+            style.bottom = position.y - _settings.MainOuterRadius;
         }
     }
 }
