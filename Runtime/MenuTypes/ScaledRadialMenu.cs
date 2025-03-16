@@ -1,9 +1,8 @@
 using System;
-using RadialMenu;
 using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
-namespace Popular_Menu_Types
+namespace RadialMenu.MenuTypes
 {
     public class ScaledRadialMenu : RadialMenuBase
     {

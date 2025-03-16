@@ -8,6 +8,7 @@ namespace RadialMenu
         IRadialMenuItem[] Items,
         Vector2 ScreenPosition,
         int VisibilityAnimationTime,
+        StyleSheet AdditionalStyleSheet,
         
         int MainOuterRadius,
         int MainInnerRadius,
@@ -31,11 +32,13 @@ namespace RadialMenu
         Action ActionAppliedOnClickInCenterElementCallback,
         RadialMenuAction DefaultActionOnClick,
         Action DefaultActionOnClickCallback,
+        
         Func<VisualElement> DefaultCenterElementCreateFunc)
     {
         public IRadialMenuItem[] Items { get; internal set; } = Items;
         public Vector2 ScreenPosition { get; internal set; } = ScreenPosition;
         public int VisibilityAnimationTime { get; internal set; } = VisibilityAnimationTime;
+        public StyleSheet AdditionalStyleSheet { get; internal set; } = AdditionalStyleSheet;
         
         public int MainInnerRadius { get; internal set; } = MainInnerRadius;
         public int MainOuterRadius { get; internal set; } = MainOuterRadius;
@@ -59,6 +62,7 @@ namespace RadialMenu
         public Action ActionAppliedOnClickInCenterElementCallback { get; internal set; } = ActionAppliedOnClickInCenterElementCallback;
         public RadialMenuAction DefaultActionOnClick { get; internal set; } = DefaultActionOnClick;
         public Action DefaultActionOnClickCallback { get; internal set; } = DefaultActionOnClickCallback;
+        
         public Func<VisualElement> DefaultCenterElementCreateFunc { get; internal set; } = DefaultCenterElementCreateFunc;
     }
 }

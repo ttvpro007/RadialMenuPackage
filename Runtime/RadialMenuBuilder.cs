@@ -13,7 +13,7 @@ namespace RadialMenu
         
         private RadialMenuBuilder(IRadialMenuItem[] items)
         {
-            _settings = new RadialMenuSettings(items, Vector2.zero, 0, 
+            _settings = new RadialMenuSettings(items, Vector2.zero, 0, null,
                 100, 90, 0, 1, 
                 Color.white, Color.white, Color.white, Color.black, 
                 50, Color.white, Color.black, Color.white, Color.black, 
@@ -72,6 +72,12 @@ namespace RadialMenu
         public RadialMenuBuilder InScreenPosition(Vector2 position)
         {
             _settings.ScreenPosition = position;
+            return this;
+        }
+
+        public RadialMenuBuilder WithAdditionalStyleSheet(StyleSheet styleSheet)
+        {
+            _settings.AdditionalStyleSheet = styleSheet;
             return this;
         }
 

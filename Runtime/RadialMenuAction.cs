@@ -5,6 +5,8 @@ namespace RadialMenu
         None,
         Close,
         PerformItem,
+        PerformItemAndClose,
         CustomAction,
+        CustomActionAndClose,
     }
 }

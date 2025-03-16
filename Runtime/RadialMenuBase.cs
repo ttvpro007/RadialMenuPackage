@@ -28,10 +28,13 @@ namespace RadialMenu
             Document = documentObj.AddComponent<UIDocument>();
             Document.panelSettings = panelSettings;
             Document.rootVisualElement.styleSheets.Add(baseStyleSheet);
+            if (settings.AdditionalStyleSheet != null)
+                Document.rootVisualElement.styleSheets.Add(settings.AdditionalStyleSheet);
 
             Document.rootVisualElement.Add(Root = new RadialMenuRoot());
             Root.Add(Element = new RadialMenuElement(settings));
             Root.PointerMoved += RootOnPointerMoved;
+            Root.PointerClick += RootOnPointerClick;
 
             InitializeHiddenState();
             State = RadialMenuState.Hidden;
@@ -47,6 +50,64 @@ namespace RadialMenu
         private void RootOnPointerMoved(Vector2 pointerScreenPosition)
         {
             UpdateState(pointerScreenPosition);
+        }
+
+        private void RootOnPointerClick(Vector2 position)
+        {
+            if (State != RadialMenuState.Visible)
+                return;
+            
+            UpdateState(position);
+            
+            float pointerDistanceFromCenter = Vector2.Distance(position, ElementCenterScreenPos);
+            if (pointerDistanceFromCenter > Settings.MainOuterRadius)
+            {
+                ApplyAction(Settings.ActionAppliedOnClickOutOfBounds, Settings.ActionAppliedOnClickOutOfBoundsCallback);
+            }
+            else if (pointerDistanceFromCenter < Settings.CenterElementRadius)
+            {
+                ApplyAction(Settings.ActionAppliedOnClickInCenterElement, Settings.ActionAppliedOnClickInCenterElementCallback);
+            }
+            else if (pointerDistanceFromCenter <= Settings.MainOuterRadius && pointerDistanceFromCenter > Settings.MainInnerRadius && _activeItemIndex >= 0)
+            {
+                Settings.Items[_activeItemIndex].OnItemPerform();
+                Hide();
+            }
+            else
+            {
+                ApplyAction(Settings.DefaultActionOnClick, Settings.DefaultActionOnClickCallback);
+            }
+        }
+
+        private void ApplyAction(RadialMenuAction action, Action customCallback)
+        {
+            switch (action)
+            {
+                case RadialMenuAction.None:
+                    break;
+                case RadialMenuAction.Close:
+                    Hide();
+                    break;
+                case RadialMenuAction.PerformItem:
+                    if (_activeItemIndex >= 0)
+                        Settings.Items[_activeItemIndex].OnItemPerform();
+                    break;
+                case RadialMenuAction.PerformItemAndClose:
+                    if (_activeItemIndex >= 0)
+                        Settings.Items[_activeItemIndex].OnItemPerform();
+                    Hide();
+                    break;
+                case RadialMenuAction.CustomAction:
+                    customCallback?.Invoke();
+                    break;
+                case RadialMenuAction.CustomActionAndClose:
+                    customCallback?.Invoke();
+                    Hide();
+                    break;
+                
+                default:
+                    break;
+            }
         }
 
         private void UpdateState(Vector2 pointerScreenPosition)

@@ -1,7 +1,6 @@
 using System;
-using RadialMenu;
 
-namespace Popular_Menu_Types
+namespace RadialMenu.MenuTypes
 {
     public class InstantRadialMenu : RadialMenuBase
     {
