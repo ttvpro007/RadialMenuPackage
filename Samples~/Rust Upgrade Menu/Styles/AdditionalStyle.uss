@@ -1,0 +1,26 @@
+RadialMenuRoot {
+    background-color: rgba(0,0,0,0.4);
+}
+
+UpgradeMenuElement {
+    justify-content: center;
+    align-items: center;
+}
+
+UpgradeMenuElement #element-icon {
+    width: 70%;
+    height: 70%;
+}
+
+UpgradeMenuCenterElement {
+    
+}
+
+UpgradeMenuCenterElement>Label {
+    color: white;
+}
+
+UpgradeMenuCenterElement>Image {
+    width: 40%;
+    height: 40%;
+}
