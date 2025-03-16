@@ -1,5 +1,7 @@
 using System;
+using RadialMenu.Contracts;
 using RadialMenu.Elements;
+using RadialMenu.Enums;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -43,13 +45,13 @@ namespace RadialMenu
 
         ~RadialMenuBase()
         {
-            if (Document && Document.gameObject)
-                GameObject.Destroy(Document.gameObject);
+            Destroy();
         }
 
         private void RootOnPointerMoved(Vector2 pointerScreenPosition)
         {
             UpdateState(pointerScreenPosition);
+            Element.UpdateCenterElement();
         }
 
         private void RootOnPointerClick(Vector2 position)
@@ -127,13 +129,22 @@ namespace RadialMenu
                 float endAngle = Mathf.Max(startAngle + angleStep - Settings.MainSegmentSpacing, 2);
                 
                 bool isHoveredSegment = angle < endAngle && angle > startAngle;
-                isHoveredSegment = isHoveredSegment && (pointerDistanceFromCenter < Settings.MainOuterRadius && pointerDistanceFromCenter > Settings.MainInnerRadius);
+                if (Settings.ActionAppliedOnClickOutOfBounds is RadialMenuAction.PerformItem or RadialMenuAction.Close
+                    or RadialMenuAction.CustomAction)
+                {
+                    isHoveredSegment = isHoveredSegment && (pointerDistanceFromCenter < Settings.MainOuterRadius && pointerDistanceFromCenter > Settings.MainInnerRadius);
+                }
+                else
+                {
+                    isHoveredSegment = isHoveredSegment && pointerDistanceFromCenter > Settings.MainInnerRadius;
+                }
 
                 if (isHoveredSegment)
                     _activeItemIndex = i;
             }
 
             Element.ActiveItemIndex = _activeItemIndex;
+            Element.CenterElementHovered = pointerDistanceFromCenter <= Settings.CenterElementRadius;
             Element.UpdatePointerPosition(pointerScreenPosition);
         }
 
@@ -184,6 +195,12 @@ namespace RadialMenu
         {
             ElementCenterScreenPos = new Vector2(position.x, Screen.height - position.y);
             Element.SetPosition(position);
+        }
+
+        public void Destroy()
+        {
+            if (Document && Document.gameObject)
+                GameObject.Destroy(Document.gameObject);
         }
     }
 }

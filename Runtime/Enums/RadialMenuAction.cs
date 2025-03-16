@@ -1,4 +1,4 @@
-namespace RadialMenu
+namespace RadialMenu.Enums
 {
     public enum RadialMenuAction
     {

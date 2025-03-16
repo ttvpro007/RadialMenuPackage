@@ -1,4 +1,6 @@
 using System;
+using RadialMenu.Contracts;
+using RadialMenu.Enums;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -14,9 +16,10 @@ namespace RadialMenu
         private RadialMenuBuilder(IRadialMenuItem[] items)
         {
             _settings = new RadialMenuSettings(items, Vector2.zero, 0, null,
-                100, 90, 0, 1, 
+                100, 90, 100, 90, 0, 1, 1,
                 Color.white, Color.white, Color.white, Color.black, 
-                50, Color.white, Color.black, Color.white, Color.black, 
+                50, 50, 1, 1, 
+                Color.white, Color.black, Color.white, Color.black, 
                 RadialMenuAction.None, null, 
                 RadialMenuAction.Close, null, 
                 RadialMenuAction.Close, null,
@@ -45,15 +48,17 @@ namespace RadialMenu
             return this;
         }
 
-        public RadialMenuBuilder WithMainOuterRadius(int radius)
+        public RadialMenuBuilder WithMainOuterRadius(int radius, int highlightedElementRadius = -1)
         {
             _settings.MainOuterRadius = radius;
+            _settings.HighlightedElementOuterRadius = highlightedElementRadius < 0 ? radius : highlightedElementRadius;
             return this;
         }
 
-        public RadialMenuBuilder WithMainInnerRadius(int radius)
+        public RadialMenuBuilder WithMainInnerRadius(int radius, int highlightedElementRadius = -1)
         {
             _settings.MainInnerRadius = radius;
+            _settings.HighlightedElementInnerRadius = highlightedElementRadius < 0 ? radius : highlightedElementRadius;
             return this;
         }
 
@@ -63,9 +68,10 @@ namespace RadialMenu
             return this;
         }
 
-        public RadialMenuBuilder WithSegmentStrokeWidth(int width)
+        public RadialMenuBuilder WithSegmentStrokeWidth(int width, int highlightedElementWidth = -1)
         {
             _settings.MainSegmentStrokeWidth = width;
+            _settings.MainSegmentHighlightedStrokeWidth = highlightedElementWidth < 0 ? width : highlightedElementWidth;
             return this;
         }
 
@@ -91,9 +97,17 @@ namespace RadialMenu
             return this;
         }
 
-        public RadialMenuBuilder WithCenterElementRadius(int radius)
+        public RadialMenuBuilder WithCenterElementRadius(int radius, int highlightedRadius = -1)
         {
             _settings.CenterElementRadius = radius;
+            _settings.CenterElementHighlightedRadius = highlightedRadius < 0 ? radius : highlightedRadius;
+            return this;
+        }
+
+        public RadialMenuBuilder WithCenterElementStrokeWidth(int width, int highlightedWidth = -1)
+        {
+            _settings.CenterElementStrokeWidth = width;
+            _settings.CenterElementHighlightedStrokeWidth = highlightedWidth < 0 ? width : highlightedWidth;
             return this;
         }
 

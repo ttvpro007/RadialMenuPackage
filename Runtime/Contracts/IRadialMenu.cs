@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace RadialMenu
+namespace RadialMenu.Contracts
 {
     public interface IRadialMenu
     {
@@ -10,5 +10,7 @@ namespace RadialMenu
         public void Show();
         public void Hide();
         public void SetScreenPosition(Vector2 position);
+
+        public void Destroy();
     }
 }
