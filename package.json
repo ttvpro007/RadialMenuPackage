@@ -2,16 +2,18 @@
   "name": "com.fixer33.radial-menu",
   "version": "1.0.0",
   "displayName": "Radial Menu",
-  "description": "Create procedural radial menu for your needs",
+  "description": "Easily create procedural radial menu for your needs",
   "unity": "6000.0",
-  "dependencies": {
-    "com.unity.test-framework": "1.4.6"
-  },
   "author": {
     "name": "Fixer33",
     "email": "fsfixer33@gmail.com",
     "url": "https://github.com/Fixer33"
   },
   "samples": [
+    {
+      "displayName": "Rust Upgrade Menu",
+      "description": "Example of creating a radial menu like in the game \"Rust\"",
+      "path": "Samples~/Rust Upgrade Menu"
+    }
   ]
 }
