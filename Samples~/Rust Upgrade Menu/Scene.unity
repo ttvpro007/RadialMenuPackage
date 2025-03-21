@@ -275,6 +275,7 @@ MonoBehaviour:
   _stoneSprite: {fileID: 21300000, guid: b1636cb91613923419d3e9dce735d0b3, type: 3}
   _metalSprite: {fileID: 21300000, guid: 999c20a7e41493548866475ee3aeb6cb, type: 3}
   _hqmSprite: {fileID: 21300000, guid: dfa0dbe31f14e29429229eca3e3415dd, type: 3}
+  _panelSettings: {fileID: 11400000, guid: 3674a3e5d3f866447a21ed4c8a0af614, type: 2}
 --- !u!4 &523660341
 Transform:
   m_ObjectHideFlags: 0

@@ -33,12 +33,13 @@ namespace RadialMenu
             return result;
         }
         
-        public static RadialMenuBuilder Create(params IRadialMenuItem[] items)
+        public static RadialMenuBuilder Create(PanelSettings panelSettings, IRadialMenuItem[] items)
         {
             return new RadialMenuBuilder(items)
             {
                 _defaultPanelSettings = Resources.Load<PanelSettings>("DefaultRadialMenuPanelSettings"),
                 _baseStyleSheet = Resources.Load<StyleSheet>("RadialMenuBaseStyle"),
+                _panelSettings = panelSettings,
             };
         }
 

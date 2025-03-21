@@ -16,6 +16,7 @@ namespace Rust_Upgrade_Menu
         [SerializeField] private Sprite _stoneSprite;
         [SerializeField] private Sprite _metalSprite;
         [SerializeField] private Sprite _hqmSprite;
+        [SerializeField] private PanelSettings _panelSettings;
         private IRadialMenu _radialMenu;
         private IRadialMenuItem[] _items;
         
@@ -33,7 +34,7 @@ namespace Rust_Upgrade_Menu
             Color centerBackground = Color.black;
             centerBackground.a = 0.1f;
             _radialMenu = RadialMenuBuilder
-                .Create(_items)
+                .Create(_panelSettings, _items)
                 .WithVisibilityAnimationTime(0.1f)
                 .WithAdditionalStyleSheet(_additionalStyle)
                 .InScreenPosition(new Vector2(Screen.width * .5f, Screen.height * .5f))
