@@ -1,0 +1,16 @@
+{
+    "name": "com.fixer33.radial-menu.rust-upgrade-menu",
+    "rootNamespace": "Rust_Upgrade_Menu",
+    "references": [
+        "GUID:3922a640a62becf48b3ea3bcc091b49b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
